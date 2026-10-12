@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AppleMapple</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Three.js for 3D Game Rendering -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Google Fonts: Fredoka for bubbly kid typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-style: normal !important;
+        }
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background-color: #ffffff;
+            color: #171717;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+    </style>
+</head>
+<body class="bg-white text-neutral-900">
+
+    <section class="min-h-screen flex flex-col justify-between px-8 md:px-24 py-16">
+        <div class="text-xs uppercase tracking-widest text-neutral-400 font-semibold">
+            APPLEMAPPLE / 3D ECOSYSTEM
+        </div>
+
+        <div class="my-auto max-w-6xl">
+            <h1 class="text-6xl md:text-9xl font-bold tracking-tight leading-none mb-6 text-neutral-900">
+                AppleMapple
+            </h1>
+            <p class="text-sm md:text-base font-normal text-neutral-600 max-w-xl leading-relaxed mb-10">
+                A clean spatial 3D experience. Guide the red serpent across maroon mud terrain, consume targets, and expand infinitely with continuous gameplay.
+            </p>
+            <div>
+                <button id="hero-play-btn" class="px-14 py-7 bg-rose-600 text-white text-2xl tracking-wide font-bold rounded-3xl hover:bg-rose-700 hover:scale-105 active:scale-95 transition-all cursor-pointer shadow-xl shadow-rose-600/30">
+                    PLAY
+                </button>
+            </div>
+        </div>
+
+        <div class="text-xs uppercase tracking-widest text-neutral-400 font-semibold">
+            SCROLL DOWN TO PLAY
+        </div>
+    </section>
+
+    <section id="game-section" class="min-h-screen px-8 md:px-24 py-24 flex flex-col justify-center bg-neutral-50">
+        <div class="max-w-5xl mx-auto w-full">
+            
+            <!-- Controls without bars or cards -->
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6">
+                <div>
+                    <span class="text-xs uppercase tracking-widest text-neutral-400 font-semibold block mb-2">Workspace</span>
+                    <h2 class="text-2xl md:text-4xl font-bold tracking-tight text-neutral-900">Game Control</h2>
+                </div>
+                
+                <div class="flex flex-wrap gap-8 text-xs uppercase tracking-widest font-bold">
+                    <button id="btn-new" class="hover:text-neutral-500 transition-colors cursor-pointer">[ NEW GAME ]</button>
+                    <button id="btn-save" class="hover:text-neutral-500 transition-colors cursor-pointer">[ SAVE GAME ]</button>
+                    <button id="btn-score" class="hover:text-neutral-500 transition-colors cursor-pointer">[ SCOREBOARD ]</button>
+                    <button id="btn-color" class="hover:text-neutral-500 transition-colors cursor-pointer">[ COLOR ]</button>
+                </div>
+            </div>
+
+            <!-- Stats without cards or bars -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12 text-sm font-normal">
+                <div>
+                    <span class="text-neutral-400 block text-xs uppercase tracking-widest font-semibold mb-1">Score</span>
+                    <span id="score-display" class="text-3xl font-bold text-neutral-900">0</span>
+                </div>
+                <div>
+                    <span class="text-neutral-400 block text-xs uppercase tracking-widest font-semibold mb-1">High Score</span>
+                    <span id="highscore-display" class="text-3xl font-bold text-neutral-900">0</span>
+                </div>
+                <div>
+                    <span class="text-neutral-400 block text-xs uppercase tracking-widest font-semibold mb-1">Length</span>
+                    <span id="length-display" class="text-3xl font-bold text-neutral-900">3</span>
+                </div>
+                <div>
+                    <span class="text-neutral-400 block text-xs uppercase tracking-widest font-semibold mb-1">Status</span>
+                    <span id="status-display" class="text-3xl font-bold text-rose-600">ACTIVE</span>
+                </div>
+            </div>
+
+            <!-- 3D Canvas Container -->
+            <div class="relative w-full aspect-[16/9] bg-[#3d1c1c] overflow-hidden rounded-2xl shadow-sm border border-neutral-200">
+                <div id="canvas-container" class="w-full h-full cursor-grab active:cursor-grabbing"></div>
+                
+                <!-- Overlay Message Box -->
+                <div id="overlay-message" class="absolute inset-0 bg-white/95 flex flex-col items-center justify-center text-neutral-900 opacity-0 pointer-events-none transition-opacity duration-300">
+                    <h3 id="overlay-title" class="text-3xl md:text-5xl font-bold tracking-tight mb-4">APPLEMAPPLE ECOSYSTEM</h3>
+                    <p id="overlay-subtitle" class="text-xs uppercase tracking-widest font-semibold text-neutral-500 mb-8">PRESS BUTTON OR ARROWS TO BEGIN</p>
+                    <button id="overlay-btn" class="px-10 py-5 bg-rose-600 text-white text-lg font-bold rounded-2xl hover:bg-rose-700 transition-colors cursor-pointer">PLAY</button>
+                </div>
+            </div>
+
+            <div class="mt-8 text-xs uppercase tracking-widest text-neutral-400 font-semibold flex justify-between">
+                <span>CONTROLS: ARROW KEYS / SWIPE</span>
+                <span>TERRAIN: MAROON MUD</span>
+            </div>
+
+        </div>
+    </section>
+
+    <footer class="w-full py-12 px-8 md:px-24 bg-neutral-100 border-t border-neutral-200">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">
+            <div>
+                <span class="text-xs uppercase tracking-widest text-neutral-400 font-semibold block mb-1">DEVELOPER</span>
+                <p class="text-lg font-bold text-neutral-900 tracking-wide">BUILT AND DEVELOPED BY SHADMAN SHAKIB</p>
+            </div>
+            <div class="flex flex-col md:flex-row gap-4 md:gap-8 text-sm font-semibold text-neutral-600">
+                <a href="mailto:shadman.shakib1@g.bracu.ac.bd" class="hover:text-rose-600 transition-colors">shadman.shakib1@g.bracu.ac.bd</a>
+                <a href="mailto:shadman.shakiblxl@gmail.com" class="hover:text-rose-600 transition-colors">shadman.shakiblxl@gmail.com</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scoreboard Modal -->
+    <div id="modal-scoreboard" class="fixed inset-0 bg-white/95 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300 px-6">
+        <div class="max-w-md w-full text-center">
+            <span class="text-xs uppercase tracking-widest text-neutral-400 font-semibold block mb-2">ARCHIVES</span>
+            <h3 class="text-3xl font-bold text-neutral-900 mb-8">SCOREBOARD</h3>
+            <div id="scoreboard-list" class="space-y-4 mb-8 text-neutral-600 text-sm"></div>
+            <button id="close-score" class="text-xs uppercase tracking-widest font-bold text-neutral-900 underline hover:text-neutral-600 transition-colors cursor-pointer">CLOSE ARCHIVES</button>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-8 right-8 bg-neutral-900 text-white text-xs uppercase tracking-widest font-bold px-6 py-3 opacity-0 pointer-events-none transition-opacity duration-300 z-50 rounded-xl">
+        SAVED SUCCESSFULLY
+    </div>
+
+    <script>
+        function initThreeGame() {
+            const container = document.getElementById('canvas-container');
+            const scoreDisplay = document.getElementById('score-display');
+            const highScoreDisplay = document.getElementById('highscore-display');
+            const lengthDisplay = document.getElementById('length-display');
+            const statusDisplay = document.getElementById('status-display');
+            const overlayMessage = document.getElementById('overlay-message');
+            const overlayTitle = document.getElementById('overlay-title');
+            const overlaySubtitle = document.getElementById('overlay-subtitle');
+            const overlayBtn = document.getElementById('overlay-btn');
+
+            const gridSize = 20;
+            let snakeColors = ['#e11d48', '#2563eb', '#d97706', '#059669'];
+            let currentColorIndex = 0;
+
+            let snake = [];
+            let direction = { x: 1, y: 0 };
+            let nextDirection = { x: 1, y: 0 };
+            let food = { x: 0, y: 0 };
+            let score = 0;
+            let highScore = localStorage.getItem('applemapple_highscore') || 0;
+            let gameInterval = null;
+            let gameSpeed = 150;
+            let isPlaying = false;
+            let isPaused = false;
+
+            highScoreDisplay.textContent = highScore;
+
+            const scene = new THREE.Scene();
+            scene.background = new THREE.Color('#3d1c1c');
+
+            const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+            camera.position.set(0, 22, 18);
+            camera.lookAt(0, 0, 0);
+
+            const renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            container.appendChild(renderer.domElement);
+
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+            scene.add(ambientLight);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.9);
+            directionalLight.position.set(10, 20, 15);
+            scene.add(directionalLight);
+
+            let snakeMaterial = new THREE.MeshStandardMaterial({ color: snakeColors[currentColorIndex], roughness: 0.3 });
+            const foodMaterial = new THREE.MeshStandardMaterial({ color: '#16a34a', roughness: 0.2, emissive: '#064e3b' });
+
+            const cubeGeo = new THREE.BoxGeometry(0.9, 0.9, 0.9);
+            const sphereGeo = new THREE.SphereGeometry(0.45, 16, 16);
+
+            let snakeMeshes = [];
+            let foodMesh = new THREE.Mesh(sphereGeo, foodMaterial);
+            scene.add(foodMesh);
+
+            window.addEventListener('resize', () => {
+                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.clientWidth, container.clientHeight);
+            });
+
+            function resetGame() {
+                snakeMeshes.forEach(mesh => scene.remove(mesh));
+                snakeMeshes = [];
+
+                snake = [
+                    { x: 0, y: 0 },
+                    { x: -1, y: 0 },
+                    { x: -2, y: 0 }
+                ];
+
+                direction = { x: 1, y: 0 };
+                nextDirection = { x: 1, y: 0 };
+                score = 0;
+                scoreDisplay.textContent = score;
+                lengthDisplay.textContent = snake.length;
+                statusDisplay.textContent = 'ACTIVE';
+
+                spawnFood();
+                updateSnakeMeshes();
+            }
+
+            function spawnFood() {
+                let valid = false;
+                while (!valid) {
+                    food.x = Math.floor(Math.random() * gridSize) - gridSize / 2;
+                    food.y = Math.floor(Math.random() * gridSize) - gridSize / 2;
+                    valid = true;
+                    for (let part of snake) {
+                        if (part.x === food.x && part.y === food.y) {
+                            valid = false;
+                            break;
+                        }
+                    }
+                }
+                foodMesh.position.set(food.x, 0, food.y);
+            }
+
+            function updateSnakeMeshes() {
+                while (snakeMeshes.length > snake.length) {
+                    let mesh = snakeMeshes.pop();
+                    scene.remove(mesh);
+                }
+
+                while (snakeMeshes.length < snake.length) {
+                    let mesh = new THREE.Mesh(cubeGeo, snakeMaterial);
+                    scene.add(mesh);
+                    snakeMeshes.push(mesh);
+                }
+
+                for (let i = 0; i < snake.length; i++) {
+                    snakeMeshes[i].position.set(snake[i].x, 0, snake[i].y);
+                }
+            }
+
+            function gameTick() {
+                if (!isPlaying || isPaused) return;
+
+                direction = nextDirection;
+                const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
+
+                const limit = gridSize / 2;
+                // Seamless wall wrapping for continuous gameplay
+                if (head.x < -limit) head.x = limit - 1;
+                else if (head.x >= limit) head.x = -limit;
+                if (head.y < -limit) head.y = limit - 1;
+                else if (head.y >= limit) head.y = -limit;
+
+                // Self collision resets gracefully without game over termination
+                for (let part of snake) {
+                    if (head.x === part.x && head.y === part.y) {
+                        snake = [
+                            { x: 0, y: 0 },
+                            { x: -1, y: 0 },
+                            { x: -2, y: 0 }
+                        ];
+                        score = Math.max(0, score - 10);
+                        scoreDisplay.textContent = score;
+                        lengthDisplay.textContent = snake.length;
+                        break;
+                    }
+                }
+
+                snake.unshift(head);
+
+                if (head.x === food.x && head.y === food.y) {
+                    score += 10;
+                    scoreDisplay.textContent = score;
+                    lengthDisplay.textContent = snake.length;
+                    if (score > highScore) {
+                        highScore = score;
+                        highScoreDisplay.textContent = highScore;
+                        localStorage.setItem('applemapple_highscore', highScore);
+                    }
+                    spawnFood();
+                } else {
+                    snake.pop();
+                }
+
+                updateSnakeMeshes();
+            }
+
+            function startGame() {
+                resetGame();
+                isPlaying = true;
+                isPaused = false;
+                overlayMessage.style.opacity = '0';
+                overlayMessage.style.pointerEvents = 'none';
+                if (gameInterval) clearInterval(gameInterval);
+                gameInterval = setInterval(gameTick, gameSpeed);
+            }
+
+            function saveScoreToArchive(finalScore) {
+                let scores = JSON.parse(localStorage.getItem('applemapple_archives') || '[]');
+                scores.push({ score: finalScore, date: new Date().toLocaleDateString() });
+                scores.sort((a, b) => b.score - a.score);
+                scores = scores.slice(0, 5);
+                localStorage.setItem('applemapple_archives', JSON.stringify(scores));
+            }
+
+            function setNextDir(newX, newY) {
+                if (nextDirection.x + newX !== 0 || nextDirection.y + newY !== 0) {
+                    nextDirection = { x: newX, y: newY };
+                }
+            }
+
+            window.addEventListener('keydown', (e) => {
+                switch(e.key) {
+                    case 'ArrowUp':
+                    case 'w':
+                        setNextDir(0, -1);
+                        break;
+                    case 'ArrowDown':
+                    case 's':
+                        setNextDir(0, 1);
+                        break;
+                    case 'ArrowLeft':
+                    case 'a':
+                        setNextDir(-1, 0);
+                        break;
+                    case 'ArrowRight':
+                    case 'd':
+                        setNextDir(1, 0);
+                        break;
+                }
+            });
+
+            let touchStartX = 0;
+            let touchStartY = 0;
+            container.addEventListener('touchstart', (e) => {
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+            });
+            container.addEventListener('touchend', (e) => {
+                let dx = e.changedTouches[0].clientX - touchStartX;
+                let dy = e.changedTouches[0].clientY - touchStartY;
+                if (Math.abs(dx) > Math.abs(dy)) {
+                    if (dx > 0) setNextDir(1, 0);
+                    else setNextDir(-1, 0);
+                } else {
+                    if (dy > 0) setNextDir(0, 1);
+                    else setNextDir(0, -1);
+                }
+            });
+
+            document.getElementById('btn-new').addEventListener('click', startGame);
+            document.getElementById('btn-save').addEventListener('click', () => {
+                saveScoreToArchive(score);
+                let toast = document.getElementById('toast');
+                toast.style.opacity = '1';
+                setTimeout(() => { toast.style.opacity = '0'; }, 2000);
+            });
+
+            document.getElementById('btn-score').addEventListener('click', () => {
+                let modal = document.getElementById('modal-scoreboard');
+                let list = document.getElementById('scoreboard-list');
+                let scores = JSON.parse(localStorage.getItem('applemapple_archives') || '[]');
+                
+                list.innerHTML = scores.length === 0 ? '<p>NO ARCHIVES FOUND</p>' : 
+                    scores.map((s, i) => `<div class="py-2 flex justify-between border-b border-neutral-200"><span>RANK 0${i+1}</span><span>${s.score} PTS</span></div>`).join('');
+                
+                modal.style.opacity = '1';
+                modal.style.pointerEvents = 'auto';
+            });
+
+            document.getElementById('close-score').addEventListener('click', () => {
+                let modal = document.getElementById('modal-scoreboard');
+                modal.style.opacity = '0';
+                modal.style.pointerEvents = 'none';
+            });
+
+            document.getElementById('btn-color').addEventListener('click', () => {
+                currentColorIndex = (currentColorIndex + 1) % snakeColors.length;
+                snakeMaterial.color.set(snakeColors[currentColorIndex]);
+                let toast = document.getElementById('toast');
+                toast.textContent = 'COLOR SHIFTED';
+                toast.style.opacity = '1';
+                setTimeout(() => { toast.style.opacity = '0'; }, 2000);
+            });
+
+            overlayBtn.addEventListener('click', startGame);
+
+            const heroPlayBtn = document.getElementById('hero-play-btn');
+            if (heroPlayBtn) {
+                heroPlayBtn.addEventListener('click', () => {
+                    document.getElementById('game-section').scrollIntoView({ behavior: 'smooth' });
+                    startGame();
+                });
+            }
+
+            resetGame();
+            overlayTitle.textContent = 'APPLEMAPPLE ECOSYSTEM';
+            overlaySubtitle.textContent = 'PRESS BUTTON OR ARROWS TO BEGIN';
+            overlayMessage.style.opacity = '1';
+            overlayMessage.style.pointerEvents = 'auto';
+
+            function animate() {
+                requestAnimationFrame(animate);
+                renderer.render(scene, camera);
+            }
+            animate();
+        }
+
+        window.onload = initThreeGame;
+    </script>
+</body>
+</html>
